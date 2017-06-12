@@ -39,7 +39,7 @@ class ForInArrayLoopGenerator(codegen: ExpressionCodegen, forExpression: KtForEx
 
         indexVar = createLoopTempVariable(Type.INT_TYPE)
 
-        val loopRange = forExpression.loopRange
+        val loopRange = forExpression.loopRange!!
         val value = codegen.gen(loopRange)
         val asmLoopRangeType = codegen.asmType(loopRangeType)
         if (value is StackValue.Local && value.type == asmLoopRangeType) {

@@ -34,7 +34,7 @@ class ForInCharSequenceLoopGenerator(codegen: ExpressionCodegen, forExpression: 
 
         indexVar = createLoopTempVariable(Type.INT_TYPE)
 
-        val loopRange = forExpression.loopRange
+        val loopRange = forExpression.loopRange!!
         val value = codegen.gen(loopRange)
         val loopRangeType: KotlinType = bindingContext.getType(forExpression.loopRange!!)!!
         val asmLoopRangeType = codegen.asmType(loopRangeType)

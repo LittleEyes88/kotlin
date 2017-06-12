@@ -33,18 +33,18 @@ enum class ValueKind {
 
 abstract class CallGenerator {
 
-    internal class DefaultCallGenerator(private val codegen: ExpressionCodegen) : CallGenerator() {
+    internal class DefaultCallGenerator(private val codegen: BaseExpressionCodegen) : CallGenerator() {
 
         override fun genCallInner(
                 callableMethod: Callable,
                 resolvedCall: ResolvedCall<*>?,
                 callDefault: Boolean,
-                codegen: ExpressionCodegen) {
+                codegen: BaseExpressionCodegen) {
             if (!callDefault) {
-                callableMethod.genInvokeInstruction(codegen.v)
+                callableMethod.genInvokeInstruction(codegen.visitor)
             }
             else {
-                (callableMethod as CallableMethod).genInvokeDefaultInstruction(codegen.v)
+                (callableMethod as CallableMethod).genInvokeDefaultInstruction(codegen.visitor)
             }
         }
 
@@ -62,20 +62,20 @@ abstract class CallGenerator {
                 parameterType: Type,
                 parameterIndex: Int) {
             val value = codegen.gen(argumentExpression)
-            value.put(parameterType, codegen.v)
+            value.put(parameterType, codegen.visitor)
         }
 
         override fun putCapturedValueOnStack(
                 stackValue: StackValue, valueType: Type, paramIndex: Int) {
-            stackValue.put(stackValue.type, codegen.v)
+            stackValue.put(stackValue.type, codegen.visitor)
         }
 
         override fun putValueIfNeeded(parameterType: Type, value: StackValue, kind: ValueKind, parameterIndex: Int) {
-            value.put(value.type, codegen.v)
+            value.put(value.type, codegen.visitor)
         }
 
         override fun reorderArgumentsIfNeeded(actualArgsWithDeclIndex: List<ArgumentAndDeclIndex>, valueParameterTypes: List<Type>) {
-            val mark = codegen.myFrameMap.mark()
+            val mark = codegen.frameMap.mark()
             val reordered = actualArgsWithDeclIndex.withIndex().dropWhile {
                 it.value.declIndex == it.index
             }
@@ -84,12 +84,12 @@ abstract class CallGenerator {
                 val argumentAndDeclIndex = it.value
                 val type = valueParameterTypes.get(argumentAndDeclIndex.declIndex)
                 val stackValue = StackValue.local(codegen.frameMap.enterTemp(type), type)
-                stackValue.store(StackValue.onStack(type), codegen.v)
+                stackValue.store(StackValue.onStack(type), codegen.visitor)
                 Pair(argumentAndDeclIndex.declIndex, stackValue)
             }.sortedBy {
                 it.first
             }.forEach {
-                it.second.put(valueParameterTypes.get(it.first), codegen.v)
+                it.second.put(valueParameterTypes.get(it.first), codegen.visitor)
             }
             mark.dropTo()
         }
@@ -106,7 +106,7 @@ abstract class CallGenerator {
         genCallInner(callableMethod, resolvedCall, callDefault, codegen)
     }
 
-    abstract fun genCallInner(callableMethod: Callable, resolvedCall: ResolvedCall<*>?, callDefault: Boolean, codegen: ExpressionCodegen)
+    abstract fun genCallInner(callableMethod: Callable, resolvedCall: ResolvedCall<*>?, callDefault: Boolean, codegen: BaseExpressionCodegen)
 
     abstract fun genValueAndPut(
             valueParameterDescriptor: ValueParameterDescriptor,

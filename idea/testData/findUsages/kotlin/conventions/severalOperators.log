@@ -1,0 +1,119 @@
+Checked type of a
+Checked type of a
+Checked type of a
+Checked type of a
+Checked type of a
+Checked type of a
+Checked type of a
+Checked type of a
+Checked type of a
+Checked type of a
+Checked type of a
+Checked type of a
+Checked type of b
+Checked type of b
+Checked type of b
+Checked type of b
+Checked type of b
+Checked type of b
+Checked type of b
+Checked type of b
+Checked type of b
+Checked type of b
+Checked type of c
+Checked type of c
+Checked type of c
+Checked type of c
+Checked type of c
+Checked type of c
+Checked type of c
+Checked type of c
+Checked type of c
+Checked type of c
+Checked type of c
+Checked type of c
+Checked type of times(other: Diction)
+Checked type of times(other: Diction)
+Checked type of times(other: Diction)
+Checked type of times(other: Diction)
+Checked type of times(other: Diction)
+Resolved d1 * d2
+Resolved d1 * d2
+Resolved d1 + d2
+Resolved d1 + d2
+Resolved d1 - d2
+Searched references to Diction
+Searched references to Diction
+Searched references to Diction
+Searched references to Diction
+Searched references to Diction
+Searched references to Diction.minus(other: Diction) in non-Java files
+Searched references to Diction.minus(other: Diction) in non-Java files
+Searched references to Diction.minus(other: Diction) in non-Java files
+Searched references to Diction.minus(other: Diction) in non-Java files
+Searched references to Diction.minus(other: Diction) in non-Java files
+Searched references to Diction.plus(other: Diction) in non-Java files
+Searched references to Diction.plus(other: Diction) in non-Java files
+Searched references to Diction.plus(other: Diction) in non-Java files
+Searched references to Diction.plus(other: Diction) in non-Java files
+Searched references to Diction.plus(other: Diction) in non-Java files
+Searched references to a in non-Java files
+Searched references to a in non-Java files
+Searched references to a in non-Java files
+Searched references to a in non-Java files
+Searched references to a in non-Java files
+Searched references to b in non-Java files
+Searched references to b in non-Java files
+Searched references to b in non-Java files
+Searched references to b in non-Java files
+Searched references to b in non-Java files
+Searched references to c in non-Java files
+Searched references to c in non-Java files
+Searched references to c in non-Java files
+Searched references to c in non-Java files
+Searched references to c in non-Java files
+Searched references to parameter d1 of test(d1: Diction, d2: Diction) in non-Java files
+Searched references to parameter d1 of test(d1: Diction, d2: Diction) in non-Java files
+Searched references to parameter d1 of test(d1: Diction, d2: Diction) in non-Java files
+Searched references to parameter d1 of test(d1: Diction, d2: Diction) in non-Java files
+Searched references to parameter d1 of test(d1: Diction, d2: Diction) in non-Java files
+Searched references to parameter d2 of test(d1: Diction, d2: Diction) in non-Java files
+Searched references to parameter d2 of test(d1: Diction, d2: Diction) in non-Java files
+Searched references to parameter d2 of test(d1: Diction, d2: Diction) in non-Java files
+Searched references to parameter d2 of test(d1: Diction, d2: Diction) in non-Java files
+Searched references to parameter d2 of test(d1: Diction, d2: Diction) in non-Java files
+Searched references to parameter other of Diction.minus(other: Diction) in non-Java files
+Searched references to parameter other of Diction.minus(other: Diction) in non-Java files
+Searched references to parameter other of Diction.minus(other: Diction) in non-Java files
+Searched references to parameter other of Diction.minus(other: Diction) in non-Java files
+Searched references to parameter other of Diction.minus(other: Diction) in non-Java files
+Searched references to parameter other of Diction.plus(other: Diction) in non-Java files
+Searched references to parameter other of Diction.plus(other: Diction) in non-Java files
+Searched references to parameter other of Diction.plus(other: Diction) in non-Java files
+Searched references to parameter other of Diction.plus(other: Diction) in non-Java files
+Searched references to parameter other of Diction.plus(other: Diction) in non-Java files
+Searched references to parameter other of times(other: Diction) in non-Java files
+Searched references to parameter other of times(other: Diction) in non-Java files
+Searched references to parameter other of times(other: Diction) in non-Java files
+Searched references to parameter other of times(other: Diction) in non-Java files
+Searched references to parameter other of times(other: Diction) in non-Java files
+Searched references to times(other: Diction) in non-Java files
+Searched references to times(other: Diction) in non-Java files
+Searched references to times(other: Diction) in non-Java files
+Searched references to times(other: Diction) in non-Java files
+Searched references to times(other: Diction) in non-Java files
+Used plain search of Diction.minus(other: Diction) in LocalSearchScope:
+    CLASS:Diction
+    FUN:times
+Used plain search of Diction.plus(other: Diction) in LocalSearchScope:
+    CLASS:Diction
+    FUN:times
+Used plain search of Diction.plus(other: Diction) in LocalSearchScope:
+    CLASS:Diction
+    FUN:times
+Used plain search of times(other: Diction) in LocalSearchScope:
+    CLASS:Diction
+    FUN:times
+Used plain search of times(other: Diction) in LocalSearchScope:
+    CLASS:Diction
+    FUN:times

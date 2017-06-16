@@ -373,7 +373,7 @@ public class K2JSCompiler extends CLICompiler<K2JSCompilerArguments> {
                         if (existingIndex != null) {
                             existingIndex = Math.min(existingIndex, pathToRoot.size() - 1);
                             pathToRoot.subList(existingIndex + 1, pathToRoot.size()).clear();
-                            commonPath = file;
+                            commonPath = pathToRoot.get(pathToRoot.size() - 1);
                             break;
                         }
                         file = file.getParentFile();

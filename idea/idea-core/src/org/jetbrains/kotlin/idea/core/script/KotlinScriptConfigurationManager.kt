@@ -226,7 +226,7 @@ class KotlinScriptConfigurationManager(
         val scriptContents = getScriptContents(scriptDefinition, file)
 
         val newFuture = supplyAsync(Supplier {
-            val newDependencies = scriptDefinition.getDependenciesFor(oldDataAndRequest?.dependencies, scriptContents)
+            val newDependencies = scriptDefinition.getDependenciesFor(oldDataAndRequest?.dependencies, scriptContents) ?: EmptyDependencies
             cacheLock.read {
                 val lastTimeStamp = cache[path]?.requestInProgress?.timeStamp
                 if (lastTimeStamp == currentTimeStamp) {
@@ -256,31 +256,27 @@ class KotlinScriptConfigurationManager(
     private fun <TF : Any> updateSync(file: TF, scriptDef: KotlinScriptDefinition): Boolean {
         val path = getFilePath(file)
         val oldDeps = cache[path]?.dependencies
-        val newDeps = resolveDependencies(scriptDef, file, oldDeps)
+        val newDeps = resolveDependencies(scriptDef, file, oldDeps) ?: EmptyDependencies
         return cacheSync(newDeps, oldDeps, path, file as? VirtualFile)
     }
 
     private fun cacheSync(
-            new: KotlinScriptExternalDependencies?,
+            new: KotlinScriptExternalDependencies,
             old: KotlinScriptExternalDependencies?,
             path: String,
             file: VirtualFile?
     ): Boolean {
         return when {
-            new != null && (old == null || !(new.match(old))) -> {
+            old == null || !(new.match(old)) -> {
                 // changed or new
                 save(path, new, file, persist = true)
                 true
             }
-            new != null -> {
+            else -> {
                 save(path, new, file, persist = false)
+                // same
                 false
-            } // same
-            cache.remove(path) != null -> {
-                save(path, null, file, persist = true)
-                true
             }
-            else -> false // unknown
         }
     }
 
@@ -386,3 +382,5 @@ object TimeStamps {
 
     fun next() = TimeStamp(current++)
 }
+
+private object EmptyDependencies: KotlinScriptExternalDependencies

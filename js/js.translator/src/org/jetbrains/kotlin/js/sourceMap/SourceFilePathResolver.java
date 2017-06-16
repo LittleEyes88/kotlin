@@ -27,6 +27,9 @@ public class SourceFilePathResolver {
     @NotNull
     private final Set<File> sourceRoots;
 
+    @NotNull
+    private final Map<File, String> cache = new HashMap<>();
+
     public SourceFilePathResolver(@NotNull List<File> sourceRoots) {
         this.sourceRoots = new HashSet<>();
         for (File sourceRoot : sourceRoots) {
@@ -36,6 +39,15 @@ public class SourceFilePathResolver {
 
     @NotNull
     public String getPathRelativeToSourceRoots(@NotNull File file) throws IOException {
+        String path = cache.get(file);
+        if (path == null) {
+            path = calculatePathRelativeToSourceRoots(file);
+            cache.put(file, path);
+        }
+        return path;
+    }
+
+    private String calculatePathRelativeToSourceRoots(@NotNull File file) throws IOException {
         List<String> parts = new ArrayList<>();
         File currentFile = file.getCanonicalFile();
 

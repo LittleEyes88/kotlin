@@ -27,6 +27,7 @@ import org.jetbrains.kotlin.codegen.KotlinCodegenFacade
 import org.jetbrains.kotlin.codegen.state.GenerationState
 import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.script.KotlinScriptDefinition
+import org.jetbrains.kotlin.script.KotlinScriptExternalImportsProvider
 import java.io.File
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.write
@@ -61,7 +62,7 @@ open class GenericReplCompiler(disposable: Disposable,
                 Pair(compilerState.lastLineState!!.psiFile, compilerState.lastLineState!!.errorHolder)
             }
 
-            val newDependencies = scriptDefinition.getDependenciesFor(psiFile, checker.environment.project, compilerState.lastDependencies)
+            val newDependencies = KotlinScriptExternalImportsProvider.getInstance(checker.environment.project).getScriptDependencies(psiFile)
             var classpathAddendum: List<File>? = null
             if (compilerState.lastDependencies != newDependencies) {
                 compilerState.lastDependencies = newDependencies

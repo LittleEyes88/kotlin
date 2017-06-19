@@ -49,19 +49,20 @@ import kotlin.concurrent.write
 import kotlin.script.dependencies.KotlinScriptExternalDependencies
 
 
+// NOTE: this service is need exclusively because KotlinScriptConfigurationManager
+// cannot be registered as implementing two services (state would be duplicated)
 class IdeScriptExternalImportsProvider(
         private val scriptConfigurationManager: KotlinScriptConfigurationManager
 ) : KotlinScriptExternalImportsProvider {
-    override fun <TF : Any> getExternalImports(file: TF): KotlinScriptExternalDependencies? {
-        return scriptConfigurationManager.getExternalImports(file)
+    override fun <TF : Any> getScriptDependencies(file: TF): KotlinScriptExternalDependencies? {
+        return scriptConfigurationManager.getScriptDependencies(file)
     }
 }
 
 class KotlinScriptConfigurationManager(
         private val project: Project,
         private val scriptDefinitionProvider: KotlinScriptDefinitionProvider
-) {
-
+) : KotlinScriptExternalImportsProviderBase(project) {
     private val cacheLock = ReentrantReadWriteLock()
     private val threadPool = newFixedThreadPool(max(1, Runtime.getRuntime().availableProcessors() / 2))
 
@@ -128,7 +129,7 @@ class KotlinScriptConfigurationManager(
         }
     }
 
-    fun getScriptClasspath(file: VirtualFile): List<VirtualFile> = toVfsRoots(getExternalImports(file).classpath)
+    fun getScriptClasspath(file: VirtualFile): List<VirtualFile> = toVfsRoots(getScriptDependencies(file).classpath)
 
     fun getAllScriptsClasspath(): List<VirtualFile> = allScriptsClasspathCache.get()
 
@@ -153,7 +154,7 @@ class KotlinScriptConfigurationManager(
 
     private val cache = hashMapOf<String, DataAndRequest?>()
 
-    fun <TF : Any> getExternalImports(file: TF): KotlinScriptExternalDependencies = cacheLock.read {
+    override fun <TF : Any> getScriptDependencies(file: TF): KotlinScriptExternalDependencies = cacheLock.read {
         val path = getFilePath(file)
         val cached = cache[path]
         cached?.dependencies?.let { return it }
@@ -222,7 +223,8 @@ class KotlinScriptConfigurationManager(
             oldDataAndRequest: DataAndRequest?
     ): Pair<TimeStamp, CompletableFuture<Unit>> {
         val currentTimeStamp = TimeStamps.next()
-        val scriptContents = scriptDefinition.makeScriptContents(file, project)
+        val scriptContents = getScriptContents(scriptDefinition, file)
+
         val newFuture = supplyAsync(Supplier {
             val newDependencies = scriptDefinition.getDependenciesFor(oldDataAndRequest?.dependencies, scriptContents)
             cacheLock.read {
@@ -254,8 +256,8 @@ class KotlinScriptConfigurationManager(
     private fun <TF : Any> updateSync(file: TF, scriptDef: KotlinScriptDefinition): Boolean {
         val path = getFilePath(file)
         val oldDeps = cache[path]?.dependencies
-        val deps = scriptDef.getDependenciesFor(file, project, oldDeps)
-        return cacheSync(deps, oldDeps, path, file as? VirtualFile)
+        val newDeps = resolveDependencies(scriptDef, file, oldDeps)
+        return cacheSync(newDeps, oldDeps, path, file as? VirtualFile)
     }
 
     private fun cacheSync(

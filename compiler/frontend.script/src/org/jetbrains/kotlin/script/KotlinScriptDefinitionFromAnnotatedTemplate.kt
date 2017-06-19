@@ -47,7 +47,7 @@ open class KotlinScriptDefinitionFromAnnotatedTemplate(
         ?: DEFAULT_SCRIPT_FILE_PATTERN
     }
 
-    val resolver: ScriptDependenciesResolver? by lazy {
+    override val dependencyResolver: ScriptDependenciesResolver by lazy {
         val defAnn by lazy { takeUnlessError { template.annotations.firstIsInstanceOrNull<kotlin.script.templates.ScriptTemplateDefinition>() } }
         val legacyDefAnn by lazy { takeUnlessError { template.annotations.firstIsInstanceOrNull<org.jetbrains.kotlin.script.ScriptTemplateDefinition>() } }
         when {
@@ -77,8 +77,8 @@ open class KotlinScriptDefinitionFromAnnotatedTemplate(
                     log.warn("[kts] Script def error ${ex.message}")
                     null
                 }
-            else -> BasicScriptDependenciesResolver()
-        }
+            else -> null
+        } ?: BasicScriptDependenciesResolver()
     }
 
     val samWithReceiverAnnotations: List<String>? by lazy {
@@ -97,7 +97,7 @@ open class KotlinScriptDefinitionFromAnnotatedTemplate(
 
         val resolveMethod = ScriptDependenciesResolver::resolve
         val resolverMethodAnnotations =
-                resolver?.let { it::class }?.memberFunctions?.find { function ->
+                dependencyResolver::class.memberFunctions.find { function ->
                     function.name == resolveMethod.name &&
                     sameSignature(function, resolveMethod)
                 }?.annotations?.filterIsInstance<AcceptedAnnotations>()
@@ -116,14 +116,6 @@ open class KotlinScriptDefinitionFromAnnotatedTemplate(
     override fun getScriptName(script: KtScript): Name = NameUtils.getScriptNameForFile(script.containingKtFile.name)
 
     override fun <TF: Any> getDependenciesFor(file: TF, project: Project, previousDependencies: KotlinScriptExternalDependencies?) = error("Should not be called")
-
-
-    fun getDependenciesFor(previousDependencies: KotlinScriptExternalDependencies?, scriptContents: ScriptContents): KotlinScriptExternalDependencies? {
-        return takeUnlessError(reportError = false) {
-            // TODO: use it as a Future
-            resolver?.resolve(scriptContents, environment, ::logScriptDefMessage, previousDependencies)?.get()
-        }
-    }
 
     override fun toString(): String = "KotlinScriptDefinitionFromAnnotatedTemplate - ${template.simpleName}"
 

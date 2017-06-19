@@ -55,7 +55,10 @@ internal fun ClassDescriptor.toJavaClass(): Class<*>? {
         else -> {
             // If this is neither a Kotlin class nor a Java class, it is either a built-in or some fake class descriptor like the one
             // that's created for java.io.Serializable in JvmBuiltInsSettings
-            val classId = JavaToKotlinClassMap.mapKotlinToJava(DescriptorUtils.getFqName(this)) ?: classId!!
+            val fqName = DescriptorUtils.getFqName(this)
+            val classId = JavaToKotlinClassMap.mapKotlinToJava(fqName) ?: classId ?: run {
+                throw KotlinReflectionInternalError("Class has no Java analogue: $this (source=$source, fqName=$fqName)")
+            }
             val packageName = classId.packageFqName.asString()
             val className = classId.relativeClassName.asString()
             // All pseudo-classes like kotlin.String.Companion must be accessible from the current class loader

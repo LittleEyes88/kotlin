@@ -110,8 +110,8 @@ open class KotlinScriptDefinitionFromAnnotatedTemplate(
 
     override val name = template.simpleName!!
 
-    override fun isScript(file: VirtualFile): Boolean =
-            scriptFilePattern.let { Regex(it).matches(file.name) }
+    override fun isScript(fileName: String): Boolean =
+            scriptFilePattern.let { Regex(it).matches(fileName) }
 
     // TODO: implement other strategy - e.g. try to extract something from match with ScriptFilePattern
     override fun getScriptName(script: KtScript): Name = NameUtils.getScriptNameForFile(script.containingKtFile.name)

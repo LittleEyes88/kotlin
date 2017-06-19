@@ -44,10 +44,12 @@ class KotlinScriptDefinitionProvider {
     }
 
     fun findScriptDefinition(file: VirtualFile): KotlinScriptDefinition? = definitionsLock.read {
-        definitions.firstOrNull { it.isScript(file) }
+        definitions.firstOrNull { it.isScript(file.name) }
     }
 
-    fun isScript(file: VirtualFile): Boolean = findScriptDefinition(file) != null
+    fun isScript(fileName: String): Boolean = definitionsLock.read {
+        definitions.any { it.isScript(fileName) }
+    }
 
     fun addScriptDefinition(scriptDefinition: KotlinScriptDefinition) {
         definitionsLock.write {

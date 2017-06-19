@@ -39,8 +39,8 @@ open class KotlinScriptDefinition(val template: KClass<out Any>) {
     open val annotationsForSamWithReceivers: List<String>
         get() = emptyList()
 
-    open fun isScript(file: VirtualFile): Boolean =
-            file.name.endsWith(KotlinParserDefinition.STD_SCRIPT_EXT)
+    open fun isScript(fileName: String): Boolean =
+            fileName.endsWith(KotlinParserDefinition.STD_SCRIPT_EXT)
 
     open fun getScriptName(script: KtScript): Name =
             NameUtils.getScriptNameForFile(script.containingKtFile.name)

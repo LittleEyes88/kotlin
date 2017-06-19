@@ -126,13 +126,8 @@ class KotlinConsoleRunner(
 
     private val consoleScriptDefinition = object : KotlinScriptDefinition(Any::class) {
         override val name = "Kotlin REPL"
-        override fun <TF: Any> isScript(file: TF): Boolean {
-            val vf = when (file) {
-                is PsiFile -> file.originalFile.virtualFile
-                is VirtualFile -> file
-                else -> return false
-            }
-            return vf == consoleView.virtualFile
+        override fun isScript(file: VirtualFile): Boolean {
+            return file == consoleView.virtualFile
         }
         override fun getScriptName(script: KtScript) = Name.identifier("REPL")
     }

@@ -223,10 +223,9 @@ class KotlinScriptConfigurationManager(
             oldDataAndRequest: DataAndRequest?
     ): Pair<TimeStamp, CompletableFuture<Unit>> {
         val currentTimeStamp = TimeStamps.next()
-        val scriptContents = getScriptContents(scriptDefinition, file)
 
         val newFuture = supplyAsync(Supplier {
-            val newDependencies = scriptDefinition.getDependenciesFor(oldDataAndRequest?.dependencies, scriptContents) ?: EmptyDependencies
+            val newDependencies = resolveDependencies(scriptDefinition, file, oldDataAndRequest?.dependencies) ?: EmptyDependencies
             cacheLock.read {
                 val lastTimeStamp = cache[path]?.requestInProgress?.timeStamp
                 if (lastTimeStamp == currentTimeStamp) {
